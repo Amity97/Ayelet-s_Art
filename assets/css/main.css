@@ -3952,3 +3952,32 @@ input, select, textarea {
     color: white;
 }
 }
+/* CSS for Portfolio Section */
+
+/* Styling for image container */
+.image-container {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Styling for caption */
+.caption {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Styling for artwork title */
+.artwork-title {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+}
+
+/* Styling for artwork description */
+.artwork-description {
+    font-size: 0.8em;
+}
