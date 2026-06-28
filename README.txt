@@ -29,6 +29,28 @@ with:
 - `category`: one of the filter labels, or a new label
 - `alt`: concise accessibility text
 
+Notes for future image updates:
+
+- Keep artwork files in `images/`.
+- Keep the old filename if you are replacing an existing artwork image and want
+  the gallery order/details to stay the same.
+- Add a new object in `assets/js/artworks.js` only when adding a brand-new
+  artwork.
+- Use compressed JPG/JPEG/PNG files when possible so GitHub Pages stays fast.
+
+Site title and icon
+-------------------
+
+The browser/search title is set in `index.html` as `Ayelet Yeruham Art`.
+The favicon/search icon uses Ayelet's portrait:
+
+- `favicon.png`
+- `images/favicon-16x16.png`
+- `images/favicon-32x32.png`
+- `images/favicon-48x48.png`
+- `images/apple-touch-icon.png`
+- `images/icon-512x512.png`
+
 Local preview
 -------------
 
