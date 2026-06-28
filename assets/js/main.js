@@ -1,190 +1,237 @@
-/*
-	Hyperspace by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
-*/
+(function () {
+  var artworks = window.ayeletArtworks || [];
+  var activeFilter = "All";
+  var activeItems = artworks.slice();
+  var activeIndex = 0;
+  var lastFocused = null;
 
-(function($) {
+  var body = document.body;
+  var header = document.querySelector("[data-header]");
+  var navToggle = document.querySelector(".nav-toggle");
+  var nav = document.querySelector("#site-nav");
+  var gallery = document.querySelector("#gallery-grid");
+  var filters = document.querySelector("#gallery-filters");
+  var search = document.querySelector("#gallery-search");
+  var emptyState = document.querySelector("#empty-state");
+  var year = document.querySelector("#year");
+  var lightbox = document.querySelector("#lightbox");
+  var lightboxImage = document.querySelector("#lightbox-image");
+  var lightboxTitle = document.querySelector("#lightbox-title");
+  var lightboxMeta = document.querySelector("#lightbox-meta");
+  var closeLightbox = document.querySelector("[data-close-lightbox]");
+  var prevLightbox = document.querySelector("[data-lightbox-prev]");
+  var nextLightbox = document.querySelector("[data-lightbox-next]");
 
-	var	$window = $(window),
-		$body = $('body'),
-		$sidebar = $('#sidebar');
+  function init() {
+    if (year) year.textContent = new Date().getFullYear();
+    renderFilters();
+    renderGallery();
+    bindEvents();
+    setHeaderState();
+  }
 
-	// Breakpoints.
-		breakpoints({
-			xlarge:   [ '1281px',  '1680px' ],
-			large:    [ '981px',   '1280px' ],
-			medium:   [ '737px',   '980px'  ],
-			small:    [ '481px',   '736px'  ],
-			xsmall:   [ null,      '480px'  ]
-		});
+  function bindEvents() {
+    window.addEventListener("scroll", setHeaderState, { passive: true });
 
-	// Hack: Enable IE flexbox workarounds.
-		if (browser.name == 'ie')
-			$body.addClass('is-ie');
+    if (navToggle) {
+      navToggle.addEventListener("click", function () {
+        var isOpen = body.classList.toggle("nav-open");
+        navToggle.setAttribute("aria-expanded", String(isOpen));
+      });
+    }
 
-	// Play initial animations on page load.
-		$window.on('load', function() {
-			window.setTimeout(function() {
-				$body.removeClass('is-preload');
-			}, 100);
-		});
+    if (nav) {
+      nav.addEventListener("click", function (event) {
+        if (event.target.matches("a")) {
+          body.classList.remove("nav-open");
+          if (navToggle) navToggle.setAttribute("aria-expanded", "false");
+        }
+      });
+    }
 
-	// Forms.
+    if (search) {
+      search.addEventListener("input", renderGallery);
+    }
 
-		// Hack: Activate non-input submits.
-			$('form').on('click', '.submit', function(event) {
+    document.querySelectorAll("[data-open-art]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var index = Number(button.getAttribute("data-open-art"));
+        openLightbox(index, artworks);
+      });
+    });
 
-				// Stop propagation, default.
-					event.stopPropagation();
-					event.preventDefault();
+    document.querySelectorAll("[data-open-press]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var src = button.getAttribute("data-open-press");
+        openPress(src);
+      });
+    });
 
-				// Submit form.
-					$(this).parents('form').submit();
+    if (closeLightbox) closeLightbox.addEventListener("click", hideLightbox);
+    if (prevLightbox) prevLightbox.addEventListener("click", showPrevious);
+    if (nextLightbox) nextLightbox.addEventListener("click", showNext);
 
-			});
+    if (lightbox) {
+      lightbox.addEventListener("click", function (event) {
+        if (event.target === lightbox) hideLightbox();
+      });
+    }
 
-	// Sidebar.
-		if ($sidebar.length > 0) {
+    document.addEventListener("keydown", function (event) {
+      if (!lightbox || lightbox.hidden) return;
+      if (event.key === "Escape") hideLightbox();
+      if (event.key === "ArrowLeft") showPrevious();
+      if (event.key === "ArrowRight") showNext();
+    });
+  }
 
-			var $sidebar_a = $sidebar.find('a');
+  function setHeaderState() {
+    if (!header) return;
+    header.classList.toggle("is-scrolled", window.scrollY > 24);
+  }
 
-			$sidebar_a
-				.addClass('scrolly')
-				.on('click', function() {
+  function renderFilters() {
+    if (!filters) return;
+    var categories = ["All"].concat(
+      artworks
+        .map(function (item) {
+          return item.category;
+        })
+        .filter(function (category, index, list) {
+          return list.indexOf(category) === index;
+        })
+    );
 
-					var $this = $(this);
+    filters.innerHTML = "";
+    categories.forEach(function (category) {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.textContent = category;
+      button.className = category === activeFilter ? "is-active" : "";
+      button.setAttribute("aria-pressed", String(category === activeFilter));
+      button.addEventListener("click", function () {
+        activeFilter = category;
+        renderFilters();
+        renderGallery();
+      });
+      filters.appendChild(button);
+    });
+  }
 
-					// External link? Bail.
-						if ($this.attr('href').charAt(0) != '#')
-							return;
+  function renderGallery() {
+    if (!gallery) return;
 
-					// Deactivate all links.
-						$sidebar_a.removeClass('active');
+    var query = search ? search.value.trim().toLowerCase() : "";
+    activeItems = artworks.filter(function (item) {
+      var matchesFilter = activeFilter === "All" || item.category === activeFilter;
+      var searchable = [item.title, item.medium, item.dimensions, item.category].join(" ").toLowerCase();
+      return matchesFilter && searchable.indexOf(query) !== -1;
+    });
 
-					// Activate link *and* lock it (so Scrollex doesn't try to activate other links as we're scrolling to this one's section).
-						$this
-							.addClass('active')
-							.addClass('active-locked');
+    gallery.innerHTML = "";
+    activeItems.forEach(function (item, index) {
+      var originalIndex = artworks.indexOf(item);
+      var card = document.createElement("button");
+      card.type = "button";
+      card.className = "art-card";
+      card.setAttribute("aria-label", "Open " + item.title + ", " + item.medium);
+      card.addEventListener("click", function () {
+        openLightbox(index, activeItems);
+      });
 
-				})
-				.each(function() {
+      var imageWrap = document.createElement("span");
+      imageWrap.className = "art-card__image";
 
-					var	$this = $(this),
-						id = $this.attr('href'),
-						$section = $(id);
+      var image = document.createElement("img");
+      image.src = item.src;
+      image.alt = item.alt;
+      image.loading = originalIndex < 6 ? "eager" : "lazy";
+      image.decoding = "async";
+      image.sizes = "(min-width: 1200px) 25vw, (min-width: 720px) 33vw, 92vw";
 
-					// No section for this link? Bail.
-						if ($section.length < 1)
-							return;
+      var caption = document.createElement("span");
+      caption.className = "art-card__caption";
+      caption.innerHTML = "<strong>" + escapeHtml(item.title) + "</strong><span>" + escapeHtml(item.medium) + " / " + escapeHtml(item.dimensions) + "</span>";
 
-					// Scrollex.
-						$section.scrollex({
-							mode: 'middle',
-							top: '-20vh',
-							bottom: '-20vh',
-							initialize: function() {
+      imageWrap.appendChild(image);
+      card.appendChild(imageWrap);
+      card.appendChild(caption);
+      gallery.appendChild(card);
+    });
 
-								// Deactivate section.
-									$section.addClass('inactive');
+    if (emptyState) emptyState.hidden = activeItems.length > 0;
+  }
 
-							},
-							enter: function() {
+  function openLightbox(index, sourceItems) {
+    if (!lightbox || !sourceItems.length) return;
+    activeItems = sourceItems;
+    activeIndex = index;
+    lastFocused = document.activeElement;
+    updateLightbox();
+    lightbox.hidden = false;
+    body.classList.add("lightbox-open");
+    if (closeLightbox) closeLightbox.focus();
+  }
 
-								// Activate section.
-									$section.removeClass('inactive');
+  function openPress(src) {
+    var pressItem = {
+      src: src,
+      title: "CAN Magazine",
+      medium: "Press feature",
+      dimensions: "Archive image",
+      alt: "CAN Magazine press image featuring Ayelet Yeruham",
+      type: "press"
+    };
+    openLightbox(0, [pressItem]);
+  }
 
-								// No locked links? Deactivate all links and activate this section's one.
-									if ($sidebar_a.filter('.active-locked').length == 0) {
+  function updateLightbox() {
+    var item = activeItems[activeIndex];
+    if (!item) return;
 
-										$sidebar_a.removeClass('active');
-										$this.addClass('active');
+    lightboxImage.src = item.src;
+    lightboxImage.alt = item.alt;
+    lightbox.classList.toggle("lightbox--press", item.type === "press");
+    lightboxTitle.textContent = item.title;
+    lightboxMeta.textContent = item.medium + " / " + item.dimensions;
 
-									}
+    var single = activeItems.length < 2;
+    if (prevLightbox) prevLightbox.hidden = single;
+    if (nextLightbox) nextLightbox.hidden = single;
+  }
 
-								// Otherwise, if this section's link is the one that's locked, unlock it.
-									else if ($this.hasClass('active-locked'))
-										$this.removeClass('active-locked');
+  function hideLightbox() {
+    if (!lightbox) return;
+    lightbox.hidden = true;
+    lightbox.classList.remove("lightbox--press");
+    body.classList.remove("lightbox-open");
+    lightboxImage.removeAttribute("src");
+    if (lastFocused && typeof lastFocused.focus === "function") lastFocused.focus();
+  }
 
-							}
-						});
+  function showPrevious() {
+    if (activeItems.length < 2) return;
+    activeIndex = (activeIndex - 1 + activeItems.length) % activeItems.length;
+    updateLightbox();
+  }
 
-				});
+  function showNext() {
+    if (activeItems.length < 2) return;
+    activeIndex = (activeIndex + 1) % activeItems.length;
+    updateLightbox();
+  }
 
-		}
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, function (character) {
+      return {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[character];
+    });
+  }
 
-	// Scrolly.
-		$('.scrolly').scrolly({
-			speed: 1000,
-			offset: function() {
-
-				// If <=large, >small, and sidebar is present, use its height as the offset.
-					if (breakpoints.active('<=large')
-					&&	!breakpoints.active('<=small')
-					&&	$sidebar.length > 0)
-						return $sidebar.height();
-
-				return 0;
-
-			}
-		});
-
-	// Spotlights.
-		$('.spotlights > section')
-			.scrollex({
-				mode: 'middle',
-				top: '-10vh',
-				bottom: '-10vh',
-				initialize: function() {
-
-					// Deactivate section.
-						$(this).addClass('inactive');
-
-				},
-				enter: function() {
-
-					// Activate section.
-						$(this).removeClass('inactive');
-
-				}
-			})
-			.each(function() {
-
-				var	$this = $(this),
-					$image = $this.find('.image'),
-					$img = $image.find('img'),
-					x;
-
-				// Assign image.
-					$image.css('background-image', 'url(' + $img.attr('src') + ')');
-
-				// Set background position.
-					if (x = $img.data('position'))
-						$image.css('background-position', x);
-
-				// Hide <img>.
-					$img.hide();
-
-			});
-
-	// Features.
-		$('.features')
-			.scrollex({
-				mode: 'middle',
-				top: '-20vh',
-				bottom: '-20vh',
-				initialize: function() {
-
-					// Deactivate section.
-						$(this).addClass('inactive');
-
-				},
-				enter: function() {
-
-					// Activate section.
-						$(this).removeClass('inactive');
-
-				}
-			});
-
-})(jQuery);
+  init();
+})();
