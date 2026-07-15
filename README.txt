@@ -19,23 +19,40 @@ Project structure
 Updating artworks
 -----------------
 
-Add new image files to `images/`, then add one object to `assets/js/artworks.js`
-with:
+Each artwork uses two image sizes so the gallery loads fast and the lightbox
+stays sharp:
 
-- `src`: image path
+- `images/art/<n>.jpg`: full image for the lightbox (max 1920px, JPEG ~85)
+- `images/thumbs/<n>.jpg`: grid thumbnail (max 800px, JPEG ~80)
+
+On a Mac you can create both with `sips`:
+
+```sh
+sips -Z 1920 -s format jpeg -s formatOptions 85 original.jpg --out images/art/300.jpg
+sips -Z 800 -s format jpeg -s formatOptions 80 original.jpg --out images/thumbs/300.jpg
+```
+
+Then add one object at the TOP of `assets/js/artworks.js` (newest works appear
+first) with:
+
+- `src`: full image path (used in the lightbox)
+- `thumb`: thumbnail path (used in the gallery grid)
 - `title`: artwork title
 - `medium`: material description
-- `dimensions`: artwork size
+- `dimensions`: artwork size, e.g. "70 x 50"
+- `year`: creation year (number) - powers the year filter buttons
+- `status`: optional; "sold" (red mark) or "nfs" (blue "Not for sale" mark)
 - `category`: one of the filter labels, or a new label
 - `alt`: concise accessibility text
 
 Notes for future image updates:
 
-- Keep artwork files in `images/`.
 - Keep the old filename if you are replacing an existing artwork image and want
   the gallery order/details to stay the same.
 - Add a new object in `assets/js/artworks.js` only when adding a brand-new
   artwork.
+- Year filter buttons and category filter buttons are generated automatically
+  from the data; there is nothing else to update.
 - Use compressed JPG/JPEG/PNG files when possible so GitHub Pages stays fast.
 
 Site title and icon

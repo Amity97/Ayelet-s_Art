@@ -137,15 +137,15 @@
           <h2 id="featured-title">Four moments from the archive</h2>
         </div>
         <div class="featured-grid">
-          <button class="feature-tile" type="button" data-open-art="0">
+          <button class="feature-tile" type="button" data-open-art-src="images/10.jpg">
             <img src="images/10.jpg" alt="Fading Away of the Holy Cow, oil on canvas by Ayelet Yeruham" />
             <span>Fading Away of the Holy Cow</span>
           </button>
-          <button class="feature-tile feature-tile--wide" type="button" data-open-art="6">
+          <button class="feature-tile feature-tile--wide" type="button" data-open-art-src="images/image105.jpeg">
             <img src="images/image105.jpeg" alt="Oil on canvas city street scene by Ayelet Yeruham" />
             <span>Oil on canvas, 90 x 110</span>
           </button>
-          <button class="feature-tile" type="button" data-open-art="22">
+          <button class="feature-tile" type="button" data-open-art-src="images/43.jpg">
             <img src="images/43.jpg" alt="Stop the Pollution, chalk and charcoal on paper by Ayelet Yeruham" />
             <span>Stop the Pollution</span>
           </button>
@@ -163,9 +163,12 @@
         <div class="toolbar" aria-label="Gallery controls">
           <label class="search-field">
             <span class="sr-only">Search artworks</span>
-            <input id="gallery-search" type="search" placeholder="Search title, medium, size..." autocomplete="off" />
+            <input id="gallery-search" type="search" placeholder="Search title, subject, medium, size..." autocomplete="off" />
           </label>
-          <div class="filters" id="gallery-filters" aria-label="Filter artworks"></div>
+          <div class="filter-stack">
+            <div class="filters" id="gallery-filters" aria-label="Filter artworks"></div>
+            <div class="filters filters--years" id="gallery-years" aria-label="Filter artworks by year"></div>
+          </div>
         </div>
 
         <div class="gallery-grid" id="gallery-grid" aria-live="polite"></div>
@@ -249,6 +252,7 @@
         <figcaption>
           <span id="lightbox-title"></span>
           <span id="lightbox-meta"></span>
+          <span id="lightbox-status" hidden></span>
         </figcaption>
       </figure>
       <button class="lightbox__nav lightbox__nav--next" type="button" data-lightbox-next aria-label="Next artwork">Next</button>
