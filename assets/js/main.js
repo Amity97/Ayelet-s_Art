@@ -180,6 +180,24 @@
     return Math.min(Math.max(ratio, 0.4), 2.6) + 0.34;
   }
 
+  function arrangeGalleryItems(items, query) {
+    if (query || activeFilter !== "All" || activeYear !== "All") return items.slice();
+
+    var promoted = items.filter(function (item) {
+      return item.status === "sold" && item.promote;
+    });
+    var arranged = items.filter(function (item) {
+      return promoted.indexOf(item) === -1;
+    });
+    var positions = [3, 10, 17];
+
+    promoted.slice(0, positions.length).forEach(function (item, index) {
+      arranged.splice(Math.min(positions[index], arranged.length), 0, item);
+    });
+
+    return arranged;
+  }
+
   function renderGallery() {
     if (!gallery) return;
 
@@ -193,7 +211,7 @@
 
     gallery.innerHTML = "";
     renderedColumns = galleryColumnCount();
-    var renderedItems = activeItems;
+    var renderedItems = arrangeGalleryItems(activeItems, query);
     var columns = [];
     var columnHeights = [];
     for (var i = 0; i < renderedColumns; i++) {
@@ -204,8 +222,7 @@
       columnHeights.push(0);
     }
 
-    activeItems.forEach(function (item, index) {
-      var originalIndex = artworks.indexOf(item);
+    renderedItems.forEach(function (item, index) {
       var card = document.createElement("button");
       card.type = "button";
       card.className = "art-card";
@@ -221,7 +238,7 @@
       var image = document.createElement("img");
       image.src = item.thumb || item.src;
       image.alt = item.alt;
-      image.loading = originalIndex < 6 ? "eager" : "lazy";
+      image.loading = index < Math.max(6, renderedColumns * 2) ? "eager" : "lazy";
       image.decoding = "async";
       image.sizes = "(min-width: 1200px) 25vw, (min-width: 720px) 33vw, 92vw";
 

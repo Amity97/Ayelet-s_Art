@@ -89,6 +89,11 @@ the `main` branch root. The existing `CNAME` file should keep
 Contact form
 ------------
 
-The contact form uses the existing Formspree endpoint:
+The contact form uses FormSubmit to send inquiries directly to:
 
-`https://formspree.io/f/xjvnrqvn`
+`ayeletbox@gmail.com`
+
+After the first real submission, FormSubmit sends a one-time activation email
+to that address. Open it and confirm the form; FormSubmit then delivers future
+submissions automatically. Check the spam folder if the activation message is
+not visible. Successful submissions return visitors to `thanks.html`.

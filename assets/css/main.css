@@ -103,7 +103,7 @@ textarea {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 18px var(--gutter);
+  padding: calc(18px + env(safe-area-inset-top, 0px)) max(var(--gutter), env(safe-area-inset-right, 0px)) 18px max(var(--gutter), env(safe-area-inset-left, 0px));
   color: var(--surface);
   transition: background 260ms ease, color 260ms ease, border-color 260ms ease;
 }
@@ -757,6 +757,10 @@ textarea {
   padding-bottom: 4px;
 }
 
+.contact-links a {
+  overflow-wrap: anywhere;
+}
+
 .contact-form {
   display: grid;
   gap: 22px;
@@ -800,6 +804,9 @@ textarea {
 }
 
 .submit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   justify-self: start;
   min-height: 48px;
   padding: 0 22px;
@@ -813,6 +820,45 @@ textarea {
 .submit-button:hover {
   background: transparent;
   color: var(--ink);
+}
+
+.thanks-page {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: max(32px, env(safe-area-inset-top, 0px)) max(var(--gutter), env(safe-area-inset-right, 0px)) max(32px, env(safe-area-inset-bottom, 0px)) max(var(--gutter), env(safe-area-inset-left, 0px));
+  background: var(--charcoal);
+}
+
+.thanks-card {
+  width: min(100%, 820px);
+  padding: clamp(34px, 7vw, 88px);
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.thanks-card h1 {
+  max-width: 12ch;
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(2.8rem, 8vw, 6.5rem);
+  font-weight: 400;
+  line-height: 0.98;
+}
+
+.thanks-card > p:not(.section-kicker) {
+  max-width: 620px;
+  margin: 28px 0 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.7vw, 1.22rem);
+}
+
+.thanks-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 26px;
+  margin-top: 36px;
 }
 
 .site-footer {
@@ -929,7 +975,7 @@ textarea {
 
 .lightbox__close {
   position: absolute;
-  top: 22px;
+  top: max(22px, env(safe-area-inset-top, 0px));
   right: var(--gutter);
   min-height: 42px;
   padding: 0 14px;
@@ -960,7 +1006,7 @@ textarea {
 
 @media (max-width: 860px) {
   .site-header {
-    padding-top: 14px;
+    padding-top: calc(14px + env(safe-area-inset-top, 0px));
     padding-bottom: 14px;
   }
 
@@ -970,7 +1016,7 @@ textarea {
 
   .site-nav {
     position: fixed;
-    inset: 73px 0 auto 0;
+    inset: calc(73px + env(safe-area-inset-top, 0px)) 0 auto 0;
     display: grid;
     gap: 0;
     padding: 18px var(--gutter) 26px;
@@ -1004,15 +1050,6 @@ textarea {
   .about,
   .contact {
     grid-template-columns: 1fr;
-  }
-
-  .featured-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .feature-tile img,
-  .feature-tile--wide img {
-    aspect-ratio: 1.1;
   }
 
   .toolbar {
@@ -1084,6 +1121,25 @@ textarea {
 
   .lightbox__nav--next {
     right: 14px;
+  }
+}
+
+@media (max-width: 680px) {
+  .featured-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-tile img,
+  .feature-tile--wide img {
+    aspect-ratio: 1.1;
+  }
+
+  .filters button {
+    min-height: 44px;
+  }
+
+  .filters--years button {
+    min-height: 40px;
   }
 }
 

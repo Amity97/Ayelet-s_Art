@@ -178,6 +178,7 @@ window.ayeletArtworks = [
     dimensions: "20 x 20",
     year: 2026,
     status: "sold",
+    promote: true,
     category: "Acrylic",
     alt: "Acrylic painting of a mountain bike overlooking green hills and distant mountains"
   },
@@ -611,6 +612,7 @@ window.ayeletArtworks = [
     dimensions: "70 x 50",
     year: 2025,
     status: "sold",
+    promote: true,
     category: "Oil",
     alt: "Oil painting of a blue slab dotted with red stars in an orange field"
   },
@@ -632,6 +634,7 @@ window.ayeletArtworks = [
     dimensions: "18 x 24",
     year: 2025,
     status: "sold",
+    promote: true,
     category: "Acrylic",
     alt: "Acrylic painting of a sunset over rippling blue water beneath an orange sky"
   },
