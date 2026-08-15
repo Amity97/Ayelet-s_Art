@@ -146,6 +146,7 @@ window.ayeletArtworks = [
     medium: "Oil on canvas",
     dimensions: "50 x 70",
     year: 2026,
+    hidden: true,
     category: "Oil",
     alt: "Oil painting of green and yellow apartment buildings beneath a striped radiating sky"
   },
@@ -176,6 +177,7 @@ window.ayeletArtworks = [
     medium: "Acrylic on wood",
     dimensions: "20 x 20",
     year: 2026,
+    status: "sold",
     category: "Acrylic",
     alt: "Acrylic painting of a mountain bike overlooking green hills and distant mountains"
   },
@@ -608,6 +610,7 @@ window.ayeletArtworks = [
     medium: "Oil on canvas",
     dimensions: "70 x 50",
     year: 2025,
+    status: "sold",
     category: "Oil",
     alt: "Oil painting of a blue slab dotted with red stars in an orange field"
   },
@@ -628,6 +631,7 @@ window.ayeletArtworks = [
     medium: "Acrylic on canvas",
     dimensions: "18 x 24",
     year: 2025,
+    status: "sold",
     category: "Acrylic",
     alt: "Acrylic painting of a sunset over rippling blue water beneath an orange sky"
   },

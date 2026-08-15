@@ -1,5 +1,7 @@
 (function () {
-  var artworks = window.ayeletArtworks || [];
+  var artworks = (window.ayeletArtworks || []).filter(function (item) {
+    return !item.hidden;
+  });
   var activeFilter = "All";
   var activeYear = "All";
   var activeItems = artworks.slice();
