@@ -1,5 +1,14 @@
 window.ayeletArtworks = [
   {
+    src: "images/art/283.jpg",
+    thumb: "images/thumbs/283.jpg",
+    title: "Untitled",
+    medium: "Oil on canvas",
+    dimensions: "50 x 70",
+    category: "Oil",
+    alt: "Oil painting of green and yellow Bauhaus buildings with rounded balconies, pastel sun rays overhead, and a pink cat on the wall"
+  },
+  {
     src: "images/art/201.jpg",
     thumb: "images/thumbs/201.jpg",
     title: "Tel Aviv Street Art on canvas",
