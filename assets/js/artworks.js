@@ -859,6 +859,7 @@ window.ayeletArtworks = [
     title: "Untitled",
     medium: "Oil on canvas",
     dimensions: "70 x 50",
+    status: "sold",
     category: "Oil",
     alt: "Oil painting with expressive color fields and vertical composition"
   },
